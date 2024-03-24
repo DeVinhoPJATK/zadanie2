@@ -1,5 +1,6 @@
 ﻿using System;
 using LegacyApp.Core.Validators;
+using LegacyApp.Core.Validators.Clients;
 using LegacyApp.Core.Validators.Users;
 
 namespace LegacyApp
@@ -8,11 +9,13 @@ namespace LegacyApp
     {
         private IInputValidator _inputValidator;
         private IClientRepository _clientRepository;
+        private IValidatorFactory _validatorFactory;
         
         public UserService()
         {
             _inputValidator = new InputValidator();
             _clientRepository = new ClientRepository();
+            _validatorFactory = new ValidatorFactory();
         }
 
         public bool AddUser(string firstName, string lastName, string email, DateTime dateOfBirth, int clientId)
@@ -41,7 +44,8 @@ namespace LegacyApp
                 LastName = lastName
             };
 
-            
+
+            var clientValidator = _validatorFactory.Create(client);
             if (client.Type == "VeryImportantClient")
             {
                 user.HasCreditLimit = false;
