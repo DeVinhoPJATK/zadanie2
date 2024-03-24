@@ -1,30 +1,35 @@
 ﻿using System;
+using LegacyApp.Core.Validators;
+using LegacyApp.Core.Validators.Users;
 
 namespace LegacyApp
 {
     public class UserService
     {
+        private IInputValidator _inputValidator;
+        
+        public UserService()
+        {
+            _inputValidator = new InputValidator();
+        }
+
         public bool AddUser(string firstName, string lastName, string email, DateTime dateOfBirth, int clientId)
         {
-            if (string.IsNullOrEmpty(firstName) || string.IsNullOrEmpty(lastName))
+            //SRP
+            if (!_inputValidator.ValidateName(firstName, lastName))
+            {
+                return false;
+            }
+            if (!_inputValidator.ValidateEmail(email))
+            {
+                return false;
+            }
+            if (!_inputValidator.ValidateAge(dateOfBirth))
             {
                 return false;
             }
 
-            if (!email.Contains("@") && !email.Contains("."))
-            {
-                return false;
-            }
-
-            var now = DateTime.Now;
-            int age = now.Year - dateOfBirth.Year;
-            if (now.Month < dateOfBirth.Month || (now.Month == dateOfBirth.Month && now.Day < dateOfBirth.Day)) age--;
-
-            if (age < 21)
-            {
-                return false;
-            }
-
+            //DIP - przeniesienie do konstruktora
             var clientRepository = new ClientRepository();
             var client = clientRepository.GetById(clientId);
 
@@ -37,6 +42,7 @@ namespace LegacyApp
                 LastName = lastName
             };
 
+            
             if (client.Type == "VeryImportantClient")
             {
                 user.HasCreditLimit = false;
