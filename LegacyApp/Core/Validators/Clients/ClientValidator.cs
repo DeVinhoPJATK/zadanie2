@@ -2,5 +2,5 @@
 
 public abstract class ClientValidator
 {
-    public abstract void CreditCheck();
+    public abstract void CreditCheck(ref User user);
 }

@@ -46,6 +46,7 @@ namespace LegacyApp
 
 
             var clientValidator = _validatorFactory.Create(client);
+            clientValidator.CreditCheck(ref user);
             if (client.Type == "VeryImportantClient")
             {
                 user.HasCreditLimit = false;
