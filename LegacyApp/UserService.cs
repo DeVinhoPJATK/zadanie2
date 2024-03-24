@@ -7,15 +7,16 @@ namespace LegacyApp
     public class UserService
     {
         private IInputValidator _inputValidator;
+        private IClientRepository _clientRepository;
         
         public UserService()
         {
             _inputValidator = new InputValidator();
+            _clientRepository = new ClientRepository();
         }
 
         public bool AddUser(string firstName, string lastName, string email, DateTime dateOfBirth, int clientId)
         {
-            //SRP
             if (!_inputValidator.ValidateName(firstName, lastName))
             {
                 return false;
@@ -29,9 +30,7 @@ namespace LegacyApp
                 return false;
             }
 
-            //DIP - przeniesienie do konstruktora
-            var clientRepository = new ClientRepository();
-            var client = clientRepository.GetById(clientId);
+            var client = _clientRepository.GetById(clientId);
 
             var user = new User
             {
