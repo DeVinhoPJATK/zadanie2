@@ -1,9 +1,31 @@
-﻿namespace LegacyApp.Core.Validators.Clients;
+﻿using System;
+
+namespace LegacyApp.Core.Validators.Clients;
 
 public class ValidatorFactory : IValidatorFactory
 {
     public ClientValidator Create(Client client)
     {
-        throw new System.NotImplementedException();
+        if (client.Type == "VeryImportantClient")
+        {
+            return new VeryImportantClientValidator();
+        }
+
+        if (client.Type == "ImportantClient")
+        {
+            return new ImportantClientValidator();
+        }
+
+        if (client.Type == "NormalClient")
+        {
+            return new NormalClientValidator();
+        }
+
+        if (client.Type == "OtherClient")
+        {
+            return new OtherClientValidator();
+        }
+
+        throw new ApplicationException("Unknown client type");
     }
 }
